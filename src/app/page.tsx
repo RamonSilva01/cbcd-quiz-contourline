@@ -1,65 +1,81 @@
-import Image from "next/image";
+"use client";
+
+import * as React from "react";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { QuizProvider, useQuiz } from "@/lib/quiz/context";
+import { QuizShell } from "@/components/quiz/quiz-shell";
+import { StepLead } from "@/components/quiz/step-lead";
+import { StepQuestion } from "@/components/quiz/step-question";
+import { StepThanks } from "@/components/quiz/step-thanks";
+import { AttractLoop } from "@/components/quiz/attract-loop";
+import { useIdle } from "@/lib/hooks/use-idle";
+
+const KIOSK_IDLE_TIMEOUT_MS = 30_000; // 30s sem interação em modo kiosk
+
+function QuizContent({ isKiosk }: { isKiosk: boolean }) {
+  const { step, dispatch, submittedLeadId } = useQuiz();
+  const [attractActive, setAttractActive] = React.useState(false);
+
+  // No modo kiosk, detecta ociosidade e ativa a tela de atração
+  const { idle, reset } = useIdle(KIOSK_IDLE_TIMEOUT_MS, isKiosk);
+
+  // Quando o usuário finaliza o quiz (chega em thanks), o StepThanks já
+  // gerencia o próprio countdown. Não queremos o attract sobrepondo.
+  const canAttract = isKiosk && step === "lead" && !submittedLeadId;
+
+  React.useEffect(() => {
+    if (canAttract && idle) setAttractActive(true);
+  }, [canAttract, idle]);
+
+  const dismissAttract = React.useCallback(() => {
+    setAttractActive(false);
+    // limpa qualquer estado parcial deixado pelo visitante anterior
+    dispatch({ type: "reset" });
+    reset();
+  }, [dispatch, reset]);
+
+  const showProgress = step === "q1" || step === "q2" || step === "q3";
+  const currentStep =
+    step === "q1" ? 1 : step === "q2" ? 2 : step === "q3" ? 3 : 1;
+
+  return (
+    <>
+      <QuizShell
+        showProgress={showProgress}
+        currentStep={currentStep}
+        totalSteps={3}
+        animationKey={step}
+      >
+        {step === "lead" && <StepLead />}
+        {step === "q1" && <StepQuestion questionNumber={1} />}
+        {step === "q2" && <StepQuestion questionNumber={2} />}
+        {step === "q3" && <StepQuestion questionNumber={3} />}
+        {step === "thanks" && <StepThanks isKiosk={isKiosk} />}
+      </QuizShell>
+      {attractActive && <AttractLoop onDismiss={dismissAttract} />}
+    </>
+  );
+}
+
+function QuizInner() {
+  const params = useSearchParams();
+  const src = params.get("src");
+  const deviceHint: "tablet_kiosk" | "qr_mobile" | "unknown" =
+    src === "kiosk" ? "tablet_kiosk" : src === "qr" ? "qr_mobile" : "unknown";
+  const isKiosk = deviceHint === "tablet_kiosk";
+
+  return (
+    <QuizProvider deviceHint={deviceHint}>
+      <QuizContent isKiosk={isKiosk} />
+    </QuizProvider>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <Suspense fallback={null}>
+      <QuizInner />
+    </Suspense>
   );
 }

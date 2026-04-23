@@ -1,26 +1,209 @@
 @import "tailwindcss";
 
+@theme {
+  /* === Contourline Brand Palette === */
+  --color-navy-50: #E8EDF3;
+  --color-navy-100: #C6D0DE;
+  --color-navy-200: #9EAEC4;
+  --color-navy-300: #6F85A6;
+  --color-navy-500: #2B4B78;
+  --color-navy-700: #183659;
+  --color-navy-900: #0F2B4B;
+  --color-navy-950: #091C33;
+
+  --color-bronze-300: #E1C6A3;
+  --color-bronze-400: #D4B48A;
+  --color-bronze-500: #B8946A;
+  --color-bronze-600: #9B7A54;
+  --color-bronze-700: #7C6142;
+
+  --color-bone-50: #FCFAF7;
+  --color-bone-100: #F6F3EE;
+  --color-bone-200: #EBE5DC;
+  --color-bone-300: #DDD3C5;
+
+  --color-clinical-300: #B8BFC7;
+  --color-clinical-400: #8B959E;
+  --color-clinical-500: #6B7580;
+  --color-clinical-600: #545D67;
+  --color-clinical-700: #3F4853;
+
+  --color-success: #3F6B52;
+  --color-danger: #8B3A3A;
+
+  /* === Typography === */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  /* === Radius === */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* === Shadows === */
+  --shadow-clinical: 0 1px 2px rgba(15, 43, 75, 0.06), 0 8px 24px rgba(15, 43, 75, 0.04);
+  --shadow-elevated: 0 2px 4px rgba(15, 43, 75, 0.08), 0 16px 40px rgba(15, 43, 75, 0.08);
+  --shadow-selected: 0 0 0 1px var(--color-bronze-500), 0 2px 4px rgba(184, 148, 106, 0.12), 0 8px 24px rgba(15, 43, 75, 0.06);
+
+  /* === Animation === */
+  --ease-clinical: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-bone-100);
+  --foreground: var(--color-navy-900);
+  --card: #FFFFFF;
+  --card-foreground: var(--color-navy-900);
+  --muted: var(--color-clinical-500);
+  --muted-foreground: var(--color-clinical-700);
+  --border: rgba(15, 43, 75, 0.12);
+  --input: rgba(15, 43, 75, 0.16);
+  --ring: var(--color-bronze-500);
+  --primary: var(--color-navy-900);
+  --primary-foreground: var(--color-bone-50);
+  --accent: var(--color-bronze-500);
+  --accent-foreground: var(--color-bone-50);
+  --destructive: var(--color-danger);
+  --success: var(--color-success);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  border-color: var(--border);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Reserva safe area no iOS / notches */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  color: var(--color-navy-900);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Evita zoom no iOS em <input> (font-size precisa ser ≥ 16px) */
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+  font-size: 16px;
+}
+
+/* Aumenta touch target em dispositivos touch */
+@media (pointer: coarse) {
+  button, [role="button"], label[for] {
+    min-height: 44px;
+  }
+}
+
+/* === kiosk lock === */
+.kiosk-lock {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* === animations === */
+@keyframes rule-draw {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.04); }
+}
+
+@keyframes attract-pulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(1.12); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-rule-draw {
+  animation: rule-draw 700ms var(--ease-clinical) both;
+  transform-origin: center;
+}
+
+.animate-fade-up {
+  animation: fade-up 360ms var(--ease-clinical) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 240ms var(--ease-clinical) both;
+}
+
+.animate-scale-in {
+  animation: scale-in 320ms var(--ease-clinical) both;
+}
+
+.animate-attract-pulse {
+  animation: attract-pulse 3.6s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2.4s ease-in-out infinite;
+}
+
+/* Stagger utilities para listas */
+.stagger > *:nth-child(1) { animation-delay: 60ms; }
+.stagger > *:nth-child(2) { animation-delay: 120ms; }
+.stagger > *:nth-child(3) { animation-delay: 180ms; }
+.stagger > *:nth-child(4) { animation-delay: 240ms; }
+.stagger > *:nth-child(5) { animation-delay: 300ms; }
+.stagger > *:nth-child(6) { animation-delay: 360ms; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
