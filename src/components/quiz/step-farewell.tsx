@@ -70,7 +70,7 @@ export function StepFarewell() {
         onClick={() => dispatch({ type: "reset" })}
         className="relative z-10 mt-2"
       >
-        Passar para o próximo
+        Voltar ao início
       </Button>
 
       {/* Mini hint que a tela vai virar sozinha */}

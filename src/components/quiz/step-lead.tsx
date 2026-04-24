@@ -152,11 +152,11 @@ export function StepLead() {
           <span className="h-px w-10 bg-[var(--color-clinical-300)] md:w-12" />
           <span>~2 min · 3 perguntas</span>
         </div>
-        <p className="mt-4 max-w-md text-[12px] leading-relaxed text-[var(--color-clinical-500)] md:mt-5 md:text-[13px]">
+        <p className="mt-4 max-w-md text-[14px] leading-relaxed text-[var(--color-clinical-600)] md:mt-5 md:text-[16px]">
           Para validar a participação no sorteio é necessário seguir{" "}
-          <span className="font-medium text-[var(--color-navy-900)]">@contourlinemed</span>{" "}
+          <span className="font-semibold text-[var(--color-navy-900)]">@contourlinemed</span>{" "}
           e{" "}
-          <span className="font-medium text-[var(--color-navy-900)]">@lumenisoficial</span>.
+          <span className="font-semibold text-[var(--color-navy-900)]">@lumenisoficial</span>.
         </p>
       </div>
 
