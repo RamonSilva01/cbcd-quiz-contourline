@@ -2,16 +2,23 @@ import { z } from "zod";
 
 /**
  * CRM: aceita "12345 SP", "12345/SP", "CRM-SP 12345", "CRM 12345 SP", etc.
- * Normalizamos no backend. Aqui validamos só o essencial: contém número e UF (2 letras).
+ * Normalizamos no backend. Bloqueia caracteres especiais (#, @, !, emojis,
+ * etc) tanto no input (sanitização) quanto aqui (validação defensiva).
+ * Só aceita: letras, números, espaço, hífen, ponto e barra.
  */
 const crmSchema = z
   .string()
   .min(3, "CRM obrigatório")
   .max(30, "CRM inválido")
-  .refine(
-    (v) => /\d{3,}/.test(v) && /[A-Za-z]{2}/.test(v),
-    { message: "Informe números e a UF (ex: 123456 SP)" },
-  );
+  .refine((v) => /^[A-Za-z0-9 \-./]+$/.test(v), {
+    message: "CRM contém caracteres inválidos — use apenas letras, números e espaço",
+  })
+  .refine((v) => /\d{3,}/.test(v), {
+    message: "Informe o número do CRM",
+  })
+  .refine((v) => /[A-Za-z]{2}/.test(v), {
+    message: "Informe a UF (ex: SP, RJ, MG)",
+  });
 
 const phoneSchema = z
   .string()

@@ -84,26 +84,27 @@ const SPECIALTY_LABEL: Record<string, string> = {
 
 // ========== Helpers ==========
 
-function abbreviateName(fullName: string): string {
+/**
+ * Formata nome completo com prefixo "Dr(a)." para exibição no sorteio.
+ * Strip de título existente (Dr., Dra., Doutor, etc) + reaplica padronizado.
+ *
+ * Exemplos:
+ *   "Dra. Marina Carvalho"    → "Dr(a). Marina Carvalho"
+ *   "dr. joão silva pereira"  → "Dr(a). joão silva pereira"
+ *   "Marina Carvalho"         → "Dr(a). Marina Carvalho"
+ *
+ * (Note: o nome já chega do DB com Title Case correto porque aplicamos
+ *  toTitleCaseName no input do cadastro.)
+ *
+ * Motivo: evitar ambiguidade quando 2 médicos têm mesmo primeiro nome
+ * e mesma especialidade. Nome completo distingue inequivocamente.
+ */
+function formatFullDoctorName(fullName: string): string {
   if (!fullName) return "";
   const cleaned = fullName
     .trim()
     .replace(/^(dr\(a\)|doutora?|dra|dr)\.?\s+/i, "");
-  const parts = cleaned.split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "";
-  const first = parts[0];
-  const firstPretty =
-    first.charAt(0).toLocaleUpperCase("pt-BR") +
-    first.slice(1).toLocaleLowerCase("pt-BR");
-  if (parts.length === 1) return firstPretty;
-  const lastInitial = parts[parts.length - 1].charAt(0).toLocaleUpperCase("pt-BR");
-  return `${firstPretty} ${lastInitial}.`;
-}
-
-function formatRowLabel(fullName: string, specialty?: string): string {
-  const name = abbreviateName(fullName);
-  const sp = specialty ? SPECIALTY_LABEL[specialty] ?? specialty : "";
-  return sp ? `${name} — ${sp}` : name;
+  return `Dr(a). ${cleaned}`;
 }
 
 // ========== Main ==========
@@ -557,7 +558,7 @@ function SlotMachineStage({
             {list.map((item, i) => {
               const isWinnerRow =
                 phase === "revealed" && i === WINNER_POSITION;
-              const label = formatRowLabel(item.full_name, item.specialty);
+              const label = formatFullDoctorName(item.full_name);
               return (
                 <div
                   key={`${item.id}-${i}`}

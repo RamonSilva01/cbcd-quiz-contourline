@@ -104,12 +104,17 @@ export function StepLead() {
     },
   });
 
-  // CRM: uppercase automático enquanto digita
+  // CRM: sanitiza em tempo real.
+  // - Uppercase automático
+  // - Remove caracteres especiais (#, @, !, emojis etc)
+  // - Só permite: A-Z, 0-9, espaço, hífen, ponto, barra
   const crmReg = register("crm", {
     onChange: (e) => {
-      const upper = e.target.value.toUpperCase();
-      if (upper !== e.target.value) {
-        e.target.value = upper;
+      const cleaned = e.target.value
+        .toUpperCase()
+        .replace(/[^A-Z0-9 \-./]/g, "");
+      if (cleaned !== e.target.value) {
+        e.target.value = cleaned;
       }
       if (errors.crm) clearErrors("crm");
     },
