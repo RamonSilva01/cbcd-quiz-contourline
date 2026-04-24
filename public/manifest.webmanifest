@@ -1,18 +1,43 @@
 {
   "name": "Contourline · triLift CBCD 2026",
-  "short_name": "triLift Quiz",
-  "description": "Experiência exclusiva Contourline no CBCD 2026",
-  "start_url": "/quiz",
-  "display": "standalone",
+  "short_name": "triLift",
+  "description": "Quiz exclusivo Contourline — CBCD 2026. Responda 3 perguntas sobre o triLift® e concorra ao sorteio.",
+  "start_url": "/?src=kiosk",
+  "scope": "/",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone", "minimal-ui"],
   "orientation": "any",
-  "background_color": "#F6F3EE",
+  "background_color": "#0F2B4B",
   "theme_color": "#0F2B4B",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["medical", "health"],
   "icons": [
+    {
+      "src": "/logos/contourline-symbol.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/logos/contourline-symbol.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/logos/contourline-symbol.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quiz",
+      "short_name": "Quiz",
+      "url": "/?src=kiosk",
+      "description": "Iniciar o quiz triLift"
     }
   ]
 }

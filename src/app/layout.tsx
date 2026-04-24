@@ -21,8 +21,25 @@ export const metadata: Metadata = {
     "Experiência exclusiva Contourline no CBCD 2026. Responda 3 perguntas sobre o triLift® e concorra ao sorteio.",
   robots: { index: false, follow: false },
   manifest: "/manifest.webmanifest",
+  applicationName: "triLift Quiz",
+  appleWebApp: {
+    capable: true,
+    title: "triLift Quiz",
+    statusBarStyle: "black-translucent",
+    startupImage: [
+      { url: "/logos/contourline-symbol.png" },
+    ],
+  },
   icons: {
     icon: "/logos/contourline-symbol.png",
+    apple: [
+      { url: "/logos/contourline-symbol.png", sizes: "180x180" },
+    ],
+  },
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
   },
 };
 
