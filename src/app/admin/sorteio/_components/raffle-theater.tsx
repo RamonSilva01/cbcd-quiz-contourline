@@ -484,12 +484,16 @@ function SlotMachineStage({
   const ready = rowHeight > 0;
 
   return (
-    <div className="relative z-10 flex h-[calc(100vh-80px)] items-center justify-center px-6 pb-6 md:pb-10">
-      {/* Imagem ampliada do triLift — fornece a "moldura real" do equipamento */}
+    <div className="relative z-10 flex h-[calc(100vh-80px)] flex-col items-center justify-center gap-4 px-6 pb-4 md:gap-6 md:pb-8">
+      {/* Imagem ampliada do triLift — encolhe quando revelado pra abrir
+          espaço pro hero do ganhador. Transição suave de 500ms. */}
       <div
-        className="relative animate-scale-in"
+        className="relative animate-scale-in transition-[height] duration-500 ease-[var(--ease-clinical)]"
         style={{
-          height: "min(85vh, 920px)",
+          height:
+            phase === "revealed"
+              ? "min(55vh, 620px)"
+              : "min(88vh, 1020px)",
           aspectRatio: String(TRILIFT_ZOOM_ASPECT),
         }}
       >
@@ -573,7 +577,7 @@ function SlotMachineStage({
                     <span
                       className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]/85"
                       style={{
-                        fontSize: "clamp(0.55rem, 1.05vh, 0.95rem)",
+                        fontSize: "clamp(0.8rem, 1.6vh, 1.45rem)",
                       }}
                     >
                       ...{label}
@@ -600,51 +604,72 @@ function SlotMachineStage({
         </div>
       </div>
 
-      {/* Footer pills + ações pós-reveal */}
-      <div className="absolute inset-x-0 bottom-6 flex flex-col items-center gap-4 md:bottom-10">
-        {phase === "rolling" && (
-          <p className="animate-pulse text-[11px] uppercase tracking-[0.32em] text-[var(--color-bronze-400)]">
-            Apurando resultado…
-          </p>
-        )}
+      {/* Apurando resultado — inline durante rolling (no flex flow) */}
+      {phase === "rolling" && (
+        <p className="animate-pulse text-[11px] uppercase tracking-[0.32em] text-[var(--color-bronze-400)] md:text-xs">
+          Apurando resultado…
+        </p>
+      )}
 
-        {phase === "revealed" && (
-          <div className="flex flex-col items-center gap-4 animate-fade-up">
-            <div
-              className="inline-flex items-center rounded-full bg-[var(--color-navy-900)]/85 px-5 py-2 backdrop-blur"
-              style={{
-                border: "1.5px solid rgba(184, 148, 106, 0.85)",
-              }}
-            >
-              <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-white md:text-[11px]">
-                Sorteio realizado — Vencedor único
-              </span>
-            </div>
-            <div className="flex flex-col items-center gap-3 sm:flex-row">
-              <Button
-                variant="accent"
-                size="lg"
-                onClick={onReDraw}
-                className="min-w-[220px]"
-              >
-                <RotateCcw className="h-4 w-4" strokeWidth={1.8} />
-                Sortear novamente
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={onClose}
-                className="min-w-[160px] border-white/30 bg-black/40 text-white backdrop-blur hover:bg-white/10"
-              >
-                Encerrar
-              </Button>
-            </div>
-            <p className="max-w-md text-center text-[10px] uppercase tracking-[0.24em] text-white/50">
-              Ganhador ausente? Sortear novamente exclui quem já foi sorteado.
-            </p>
+      {/* HERO REVEAL — nome gigante legível de longe pra plateia */}
+      {phase === "revealed" && winner && (
+        <div className="flex flex-col items-center gap-3 text-center animate-fade-up md:gap-4">
+          <span
+            aria-hidden="true"
+            className="block h-px w-24 origin-center animate-rule-draw bg-[var(--color-bronze-500)]"
+          />
+          <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-[var(--color-bronze-400)] md:text-[11px]">
+            Ganhador(a) do sorteio
+          </p>
+          <h2
+            className="font-display font-semibold leading-[1.02] text-white"
+            style={{
+              fontSize: "clamp(2.25rem, 5vw + 1rem, 5rem)",
+              letterSpacing: "-0.015em",
+            }}
+          >
+            {formatFullDoctorName(winner.full_name)}
+          </h2>
+          <p className="text-xs uppercase tracking-[0.24em] text-white/60 md:text-sm">
+            CRM {winner.crm}
+          </p>
+
+          <div
+            className="mt-2 inline-flex items-center rounded-full bg-[var(--color-navy-900)]/85 px-5 py-2 backdrop-blur"
+            style={{
+              border: "1.5px solid rgba(184, 148, 106, 0.85)",
+            }}
+          >
+            <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-white md:text-[11px]">
+              Sorteio realizado — Vencedor único
+            </span>
           </div>
-        )}
-      </div>
+
+          <div className="mt-2 flex flex-col items-center gap-3 sm:flex-row">
+            <Button
+              variant="accent"
+              size="lg"
+              onClick={onReDraw}
+              className="min-w-[220px]"
+            >
+              <RotateCcw className="h-4 w-4" strokeWidth={1.8} />
+              Sortear novamente
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={onClose}
+              className="min-w-[160px] border-white/30 bg-black/40 text-white backdrop-blur hover:bg-white/10"
+            >
+              Encerrar
+            </Button>
+          </div>
+
+          <p className="max-w-md text-center text-[10px] uppercase tracking-[0.24em] text-white/50">
+            Ganhador ausente? Sortear novamente exclui quem já foi sorteado.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -672,10 +697,10 @@ function WinnerRow({ label }: { label: string }) {
             "0 0 0 1.2px rgba(184,148,106,0.95), 0 0 18px 2px rgba(184,148,106,0.55), inset 0 0 0 1px rgba(255,255,255,0.6)",
         }}
       >
-        <TrophyIcon className="shrink-0 text-[var(--color-bronze-600)]" style={{ width: "clamp(0.65rem, 1vh, 0.9rem)", height: "clamp(0.65rem, 1vh, 0.9rem)" }} />
+        <TrophyIcon className="shrink-0 text-[var(--color-bronze-600)]" style={{ width: "clamp(0.9rem, 1.5vh, 1.35rem)", height: "clamp(0.9rem, 1.5vh, 1.35rem)" }} />
         <span
           className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
-          style={{ fontSize: "clamp(0.55rem, 1.05vh, 0.95rem)" }}
+          style={{ fontSize: "clamp(0.8rem, 1.6vh, 1.45rem)" }}
         >
           {label}
         </span>
