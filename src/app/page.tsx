@@ -8,6 +8,7 @@ import { QuizShell } from "@/components/quiz/quiz-shell";
 import { StepLead } from "@/components/quiz/step-lead";
 import { StepQuestion } from "@/components/quiz/step-question";
 import { StepThanks } from "@/components/quiz/step-thanks";
+import { StepFarewell } from "@/components/quiz/step-farewell";
 import { AttractLoop } from "@/components/quiz/attract-loop";
 import { useIdle } from "@/lib/hooks/use-idle";
 
@@ -52,6 +53,7 @@ function QuizContent({ isKiosk }: { isKiosk: boolean }) {
         {step === "q2" && <StepQuestion questionNumber={2} />}
         {step === "q3" && <StepQuestion questionNumber={3} />}
         {step === "thanks" && <StepThanks isKiosk={isKiosk} />}
+        {step === "farewell" && <StepFarewell />}
       </QuizShell>
       {attractActive && <AttractLoop onDismiss={dismissAttract} />}
     </>

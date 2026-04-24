@@ -41,4 +41,10 @@ export interface QuizAnswers {
   q3?: AnswerKey;
 }
 
-export type QuizStep = "lead" | "q1" | "q2" | "q3" | "thanks";
+export type QuizStep =
+  | "lead"
+  | "q1"
+  | "q2"
+  | "q3"
+  | "thanks"
+  | "farewell";

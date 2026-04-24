@@ -9,16 +9,16 @@
 | 27/abr | QA completo + deploy Vercel staging | Dev + QA |
 | 28/abr | **Feature freeze** + deploy prod + QR impresso | Dev |
 | 29/abr | **Dry-run** completo no escritório + tablets configurados | Todos |
-| 30/abr | **Evento abre** · Goiânia | Operadora no estande |
+| 30/abr | **Evento abre** · Goiânia | Operadora no stand |
 | 01–02/mai | Monitoramento 3×/dia | Marketing |
-| 03/mai 17h | **Sorteio ao vivo** no estande | Marketing + Operadora |
+| 03/mai 17h | **Sorteio ao vivo** no stand | Marketing + Operadora |
 | 03/mai 18h | Disparo WhatsApp (fast-follow) | Marketing |
 
 ---
 
 ## 1. Configuração do Tablet Samsung (kiosk mode)
 
-Objetivo: o tablet aberto no estande deve exibir **somente o quiz**, sem
+Objetivo: o tablet aberto no stand deve exibir **somente o quiz**, sem
 permitir que visitantes saiam para outras apps. Auto-reset após conclusão.
 
 ### Passo a passo
@@ -34,7 +34,7 @@ permitir que visitantes saiam para outras apps. Auto-reset após conclusão.
 3. Configurações do **Android**:
    - **Settings → Display → Screen Timeout:** Never (ou máximo)
    - **Settings → Display → Stay awake (Developer Options):** ON
-   - **Settings → Sound → Mute** (estande barulhento)
+   - **Settings → Sound → Mute** (stand barulhento)
    - **Wi-Fi:** conectar à rede do evento + salvar senha
    - **Modo avião:** ativar se estiver usando só Wi-Fi do evento
 4. **Cabo de força:** prender com abraçadeira para não cair.
@@ -109,7 +109,7 @@ seguro com a operadora.** (Sugestão: 6 dígitos, não óbvio)
 3. Confirmar com o time qual seed será usada.
 
 ### No momento do sorteio
-1. Acessar `/admin/sorteio` em tela grande (TV do estande ou projetor)
+1. Acessar `/admin/sorteio` em tela grande (TV do stand ou projetor)
 2. Preencher:
    - Seed pública (ex: `06543 · Loteria Federal 03/05/2026`)
    - PIN administrativo
@@ -117,7 +117,7 @@ seguro com a operadora.** (Sugestão: 6 dígitos, não óbvio)
 3. Clicar **"Executar sorteio"** — há uma animação de suspense curta e
    depois a revelação do nome
 4. **Fotografar a tela** (nome + seed + hash) — prova do processo
-5. Chamar o(a) ganhador(a) ao estande
+5. Chamar o(a) ganhador(a) ao stand
 
 ### Caso o ganhador(a) não esteja presente
 O sorteio já é auditável e público. Recomenda-se:
@@ -143,7 +143,7 @@ O sorteio já é auditável e público. Recomenda-se:
 
 | Cenário | Ação |
 |---|---|
-| Wi-Fi do estande cai | O quiz depende de internet para submit. Enquanto não volta, a operadora anota nome + telefone em papel para cadastro posterior. |
+| Wi-Fi do stand cai | O quiz depende de internet para submit. Enquanto não volta, a operadora anota nome + telefone em papel para cadastro posterior. |
 | Tablet principal trava | Trocar para o tablet backup (mesma URL, mesmo kiosk mode). |
 | Tablet quebra / roubo | Usar QR code + tablet pessoal do time como fallback. |
 | Página do quiz com erro 500 | Abrir log no Vercel dashboard; se urgente, acionar Dev. |
@@ -159,7 +159,7 @@ O sorteio já é auditável e público. Recomenda-se:
 
 | Papel | Nome | Telefone | Backup |
 |---|---|---|---|
-| Operadora 1 (estande) | _____ | _____ | _____ |
-| Operadora 2 (estande) | _____ | _____ | _____ |
+| Operadora 1 (stand) | _____ | _____ | _____ |
+| Operadora 2 (stand) | _____ | _____ | _____ |
 | Marketing (dono do produto) | marketing@contourline.com.br | _____ | _____ |
 | Dev (emergência técnica) | _____ | _____ | _____ |

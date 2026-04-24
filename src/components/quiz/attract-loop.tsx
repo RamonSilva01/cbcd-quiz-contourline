@@ -4,7 +4,7 @@ import * as React from "react";
 import { ContourlineMark } from "@/components/brand/contourline-mark";
 
 const MESSAGES = [
-  "Bem-vindo ao estande Contourline.",
+  "Bem-vindo ao stand Contourline.",
   "Participe do quiz e concorra ao sorteio.",
   "Siga @contourlinemed e @lumenisoficial.",
 ];

@@ -198,7 +198,7 @@ export function StepThanks({ isKiosk }: StepThanksProps) {
         <Button
           variant="accent"
           size="lg"
-          onClick={() => dispatch({ type: "reset" })}
+          onClick={() => dispatch({ type: "goto", step: "farewell" })}
           className="min-w-[220px]"
         >
           Finalizar

@@ -1,6 +1,6 @@
 # Contourline · triLift Quiz — CBCD 2026
 
-Aplicação de quiz para ativação do estande Contourline no CBCD
+Aplicação de quiz para ativação do stand Contourline no CBCD
 (30/abr–03/mai/2026, Centro de Convenções de Goiânia).
 
 Captura leads médicos em 5 telas (cadastro + LGPD → 3 perguntas sobre

@@ -142,7 +142,7 @@ export function StepLead() {
           Experiência exclusiva
         </span>
         <h1 className="mb-4 font-display text-[clamp(2rem,4vw+1rem,3.5rem)] leading-[1.02] tracking-tight">
-          Bem-vindo<br />ao estande<br /><span className="text-[var(--color-bronze-500)]">Contourline</span>
+          Bem-vindo<br />ao stand<br /><span className="text-[var(--color-bronze-500)]">Contourline</span>
         </h1>
         <p className="max-w-md text-[15px] leading-relaxed text-[var(--color-clinical-700)] md:text-base">
           Responda três perguntas sobre o triLift® e concorra ao sorteio na

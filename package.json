@@ -2,7 +2,7 @@
   "name": "cbcd-quiz-contourline",
   "version": "1.0.0",
   "private": true,
-  "description": "Quiz de ativação do estande Contourline no CBCD 2026 (triLift)",
+  "description": "Quiz de ativação do stand Contourline no CBCD 2026 (triLift)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

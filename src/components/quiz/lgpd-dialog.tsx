@@ -68,7 +68,7 @@ export function LgpdDialog({
             </h3>
             <ul className="list-disc space-y-2 pl-5">
               <li>
-                Participação no <strong>sorteio</strong> do estande da Contourline,
+                Participação no <strong>sorteio</strong> do stand da Contourline,
                 apurado no último dia do CBCD 2026 (03/mai).
               </li>
               <li>

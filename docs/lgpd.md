@@ -16,7 +16,7 @@
 > tratar os dados pessoais fornecidos neste cadastro — **nome, especialidade,
 > CRM, telefone e e-mail** — para as seguintes finalidades:
 >
-> 1. **Participação no sorteio** realizado no estande da Contourline durante
+> 1. **Participação no sorteio** realizado no stand da Contourline durante
 >    o CBCD 2026, a ser apurado no último dia do evento (03/mai/2026);
 > 2. **Envio de comunicações profissionais** sobre produtos, tecnologias,
 >    treinamentos e conteúdos da Contourline, por **WhatsApp, e-mail e

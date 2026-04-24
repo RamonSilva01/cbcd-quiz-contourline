@@ -59,7 +59,7 @@ create table if not exists public.leads (
 );
 
 comment on table public.leads is
-  'Lead capturado no estande CBCD 2026 (triLift). Anon pode INSERT, nunca SELECT.';
+  'Lead capturado no stand CBCD 2026 (triLift). Anon pode INSERT, nunca SELECT.';
 
 create index if not exists leads_email_idx      on public.leads (lower(email));
 create index if not exists leads_crm_idx        on public.leads (crm);
