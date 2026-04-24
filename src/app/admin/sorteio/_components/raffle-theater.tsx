@@ -487,122 +487,186 @@ function SlotMachineStage({
 
   return (
     <div className="relative z-10 flex h-[calc(100vh-80px)] flex-col items-center justify-center gap-4 px-6 pb-4 md:gap-6 md:pb-8">
-      {/* Imagem ampliada do triLift — encolhe quando revelado pra abrir
-          espaço pro hero do ganhador. Transição suave de 500ms. */}
+      {/* Grid 3-col: [ganhador à esquerda] [equipamento centralizado]
+          [CRM à direita]. Equipamento mantém mesmo tamanho rolling/revealed —
+          nome do ganhador fica na pill da tela dele, laterais complementam. */}
       <div
-        className="relative animate-scale-in transition-[height] duration-500 ease-[var(--ease-clinical)]"
-        style={{
-          height:
-            phase === "revealed"
-              ? "min(48vh, 560px)"
-              : "min(85vh, 1020px)",
-          aspectRatio: String(TRILIFT_ZOOM_ASPECT),
-        }}
+        className="grid w-full items-center gap-3 md:gap-6 lg:gap-10"
+        style={{ gridTemplateColumns: "1fr auto 1fr" }}
       >
-        {/* Wrapper mascarado — o <Image> fica aqui pra que a máscara não
-            atinja o overlay de nomes que vem depois.
-            Gradient 3-stop cria fade MUITO suave dos cantos:
-              - 18% raio: opaco (centro/equipamento)
-              - 55% raio: 55% opaco (transição suave)
-              - 100% raio: transparente (BG passa através) */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0"
-          style={{
-            maskImage:
-              "radial-gradient(ellipse 62% 86% at 50% 50%, black 18%, rgba(0,0,0,0.55) 55%, transparent 100%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse 62% 86% at 50% 50%, black 18%, rgba(0,0,0,0.55) 55%, transparent 100%)",
-          }}
-        >
-          <Image
-            src="/equipment/trilift-zoom.png"
-            alt="triLift"
-            fill
-            priority
-            sizes="60vh"
-            className="object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.7)]"
-          />
+        {/* LEFT — Parabéns + nome do ganhador (revealed only) */}
+        <div className="flex min-w-0 flex-col items-end justify-center gap-3 text-right md:gap-4">
+          {phase === "revealed" && winner && (
+            <div className="flex w-full flex-col items-end gap-3 animate-fade-up md:gap-4">
+              <span
+                aria-hidden="true"
+                className="block h-px w-12 origin-center animate-rule-draw bg-[var(--color-bronze-500)] md:w-16"
+              />
+              <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-[var(--color-bronze-400)] md:text-[11px]">
+                Parabéns,
+              </p>
+              <h2
+                className="font-display font-semibold leading-[1.02]"
+                style={{
+                  // Clamp responsivo nos dois eixos — tela larga pega vw,
+                  // tela alta/quadrada pega vh, cap em 3.25rem pra caber
+                  // ao lado do equipamento sem atropelar.
+                  fontSize: "clamp(1.25rem, min(3vw, 5.5vh), 3.25rem)",
+                  letterSpacing: "-0.015em",
+                  color: "var(--color-bronze-300)",
+                  textShadow:
+                    "0 0 40px rgba(225,198,163,0.35), 0 0 80px rgba(184,148,106,0.2)",
+                  maxWidth: "100%",
+                  wordBreak: "break-word",
+                  textWrap: "balance",
+                }}
+              >
+                {formatFullDoctorName(winner.full_name)}
+              </h2>
+            </div>
+          )}
         </div>
 
-        {/* Overlay — a tela real do triLift vira o "display" do sorteio.
-            Efeito slot machine: trilha rola por cima/baixo, pill estacionário
-            no centro mostra o nome atual.
-            Border-radius acompanha os cantos arredondados reais do display
-            do triLift (moldura rose-gold). overflow-hidden clipa children. */}
+        {/* CENTER — Equipamento (mesma altura em rolling + revealed) */}
         <div
-          ref={viewportRef}
-          className="absolute overflow-hidden"
+          className="relative animate-scale-in"
           style={{
-            top: SCREEN_RECT.top,
-            left: SCREEN_RECT.left,
-            width: SCREEN_RECT.width,
-            height: SCREEN_RECT.height,
-            borderRadius: "clamp(8px, 1.4vh, 22px)",
+            height: "min(75vh, 900px)",
+            aspectRatio: String(TRILIFT_ZOOM_ASPECT),
           }}
         >
-          {/* "Tela ligada" — background claro pra o texto ficar legível */}
+          {/* Wrapper mascarado — o <Image> fica aqui pra que a máscara não
+              atinja o overlay de nomes que vem depois.
+              Gradient 3-stop cria fade MUITO suave dos cantos:
+                - 18% raio: opaco (centro/equipamento)
+                - 55% raio: 55% opaco (transição suave)
+                - 100% raio: transparente (BG passa através) */}
           <div
             aria-hidden="true"
             className="absolute inset-0"
             style={{
-              background:
-                "linear-gradient(180deg, rgba(251,249,245,0.97) 0%, rgba(243,237,227,0.96) 50%, rgba(234,223,207,0.97) 100%)",
-            }}
-          />
-
-          {/* Trilha de nomes — fade só nas bordas superior/inferior.
-              Nomes rolam VISIVELMENTE edge-to-edge em todos os momentos —
-              garante veracidade visual do sorteio (usuário sempre vê os
-              nomes passando, sem áreas 'brancas' que pareçam trava). */}
-          <div
-            className="absolute left-0 right-0 top-0 will-change-transform"
-            style={{
-              transform: `translate3d(0, ${translateY}px, 0)`,
-              filter: phase === "rolling" ? `blur(${blurPx}px)` : "none",
-              transition:
-                phase === "revealed" ? "filter 280ms ease-out" : "none",
-              visibility: ready ? "visible" : "hidden",
               maskImage:
-                "linear-gradient(180deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+                "radial-gradient(ellipse 62% 86% at 50% 50%, black 18%, rgba(0,0,0,0.55) 55%, transparent 100%)",
               WebkitMaskImage:
-                "linear-gradient(180deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+                "radial-gradient(ellipse 62% 86% at 50% 50%, black 18%, rgba(0,0,0,0.55) 55%, transparent 100%)",
             }}
           >
-            {list.map((item, i) => {
-              const label = formatFullDoctorName(item.full_name);
-              return (
-                <div
-                  key={`${item.id}-${i}`}
-                  className="flex w-full items-center justify-center px-2"
-                  style={{
-                    height: ready ? `${rowHeight}px` : "0",
-                  }}
-                >
-                  <span
-                    className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
-                    style={{
-                      fontSize: "clamp(0.7rem, min(1.55vh, 2.2vw), 1.4rem)",
-                    }}
-                  >
-                    {label}
-                  </span>
-                </div>
-              );
-            })}
+            <Image
+              src="/equipment/trilift-zoom.png"
+              alt="triLift"
+              fill
+              priority
+              sizes="60vh"
+              className="object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.7)]"
+            />
           </div>
 
-          {/* PILL ESTACIONÁRIO no slot central — igual ao WinnerRow.
-              Durante rolling, mostra o nome atual que está passando.
-              Quando revealed, mostra o winner final. */}
-          {ready && (
-            <SelectionPill
-              list={list}
-              currentRow={currentRow}
-              rowHeight={rowHeight}
-              phase={phase}
-              winner={winner}
+          {/* Overlay — a tela real do triLift vira o "display" do sorteio.
+              Efeito slot machine: trilha rola por cima/baixo, pill estacionário
+              no centro mostra o nome atual.
+              Border-radius acompanha os cantos arredondados reais do display
+              do triLift (moldura rose-gold). overflow-hidden clipa children. */}
+          <div
+            ref={viewportRef}
+            className="absolute overflow-hidden"
+            style={{
+              top: SCREEN_RECT.top,
+              left: SCREEN_RECT.left,
+              width: SCREEN_RECT.width,
+              height: SCREEN_RECT.height,
+              borderRadius: "clamp(8px, 1.4vh, 22px)",
+            }}
+          >
+            {/* "Tela ligada" — background claro pra o texto ficar legível */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(251,249,245,0.97) 0%, rgba(243,237,227,0.96) 50%, rgba(234,223,207,0.97) 100%)",
+              }}
             />
+
+            {/* Trilha de nomes — fade só nas bordas superior/inferior.
+                Nomes rolam VISIVELMENTE edge-to-edge em todos os momentos —
+                garante veracidade visual do sorteio (usuário sempre vê os
+                nomes passando, sem áreas 'brancas' que pareçam trava). */}
+            <div
+              className="absolute left-0 right-0 top-0 will-change-transform"
+              style={{
+                transform: `translate3d(0, ${translateY}px, 0)`,
+                filter: phase === "rolling" ? `blur(${blurPx}px)` : "none",
+                transition:
+                  phase === "revealed" ? "filter 280ms ease-out" : "none",
+                visibility: ready ? "visible" : "hidden",
+                maskImage:
+                  "linear-gradient(180deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(180deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+              }}
+            >
+              {list.map((item, i) => {
+                const label = formatFullDoctorName(item.full_name);
+                return (
+                  <div
+                    key={`${item.id}-${i}`}
+                    className="flex w-full items-center justify-center px-2"
+                    style={{
+                      height: ready ? `${rowHeight}px` : "0",
+                    }}
+                  >
+                    <span
+                      className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
+                      style={{
+                        fontSize: "clamp(0.7rem, min(1.55vh, 2.2vw), 1.4rem)",
+                      }}
+                    >
+                      {label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* PILL ESTACIONÁRIO no slot central — igual ao WinnerRow.
+                Durante rolling, mostra o nome atual que está passando.
+                Quando revealed, mostra o winner final. */}
+            {ready && (
+              <SelectionPill
+                list={list}
+                currentRow={currentRow}
+                rowHeight={rowHeight}
+                phase={phase}
+                winner={winner}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT — CRM do ganhador (revealed only) */}
+        <div className="flex min-w-0 flex-col items-start justify-center gap-3 text-left md:gap-4">
+          {phase === "revealed" && winner && (
+            <div className="flex w-full flex-col items-start gap-3 animate-fade-up md:gap-4">
+              <span
+                aria-hidden="true"
+                className="block h-px w-12 origin-center animate-rule-draw bg-[var(--color-bronze-500)] md:w-16"
+              />
+              <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-[var(--color-bronze-400)] md:text-[11px]">
+                CRM
+              </p>
+              <p
+                className="font-display font-semibold leading-[1.02]"
+                style={{
+                  fontSize: "clamp(1.15rem, min(2.4vw, 4.5vh), 2.75rem)",
+                  letterSpacing: "-0.015em",
+                  color: "var(--color-bronze-300)",
+                  textShadow: "0 0 40px rgba(225,198,163,0.35)",
+                  wordBreak: "break-word",
+                }}
+              >
+                {winner.crm}
+              </p>
+            </div>
           )}
         </div>
       </div>
@@ -614,42 +678,11 @@ function SlotMachineStage({
         </p>
       )}
 
-      {/* HERO REVEAL — nome gigante legível de longe pra plateia */}
+      {/* Ações + hint abaixo do equipamento quando revealed */}
       {phase === "revealed" && winner && (
-        <div
-          className="flex flex-col items-center gap-3 text-center animate-fade-up md:gap-4"
-          style={{ maxWidth: "min(94vw, 1400px)", width: "100%" }}
-        >
-          <span
-            aria-hidden="true"
-            className="block h-px w-24 origin-center animate-rule-draw bg-[var(--color-bronze-500)]"
-          />
-          <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-[var(--color-bronze-400)] md:text-[11px]">
-            Ganhador(a) do sorteio
-          </p>
-          <h2
-            className="font-display font-semibold leading-[1.02]"
-            style={{
-              // Clamp responsivo em ambos eixos — telões largos/quadrados
-              // (ex: 60" a 1280×1152) ganham fonte menor pra não estourar.
-              fontSize: "clamp(1.75rem, min(4.5vw, 7.5vh), 4.5rem)",
-              letterSpacing: "-0.015em",
-              color: "var(--color-bronze-300)",
-              textShadow:
-                "0 0 40px rgba(225,198,163,0.35), 0 0 80px rgba(184,148,106,0.2)",
-              maxWidth: "100%",
-              wordBreak: "break-word",
-              textWrap: "balance",
-            }}
-          >
-            {formatFullDoctorName(winner.full_name)}
-          </h2>
-          <p className="text-xs uppercase tracking-[0.24em] text-white/60 md:text-sm">
-            CRM {winner.crm}
-          </p>
-
+        <div className="flex flex-col items-center gap-3 animate-fade-up md:gap-4">
           <div
-            className="mt-2 inline-flex items-center rounded-full bg-[var(--color-navy-900)]/85 px-5 py-2 backdrop-blur"
+            className="inline-flex items-center rounded-full bg-[var(--color-navy-900)]/85 px-5 py-2 backdrop-blur"
             style={{
               border: "1.5px solid rgba(184, 148, 106, 0.85)",
             }}
@@ -659,7 +692,7 @@ function SlotMachineStage({
             </span>
           </div>
 
-          <div className="mt-2 flex flex-col items-center gap-3 sm:flex-row">
+          <div className="flex flex-col items-center gap-3 sm:flex-row">
             <Button
               variant="accent"
               size="lg"
