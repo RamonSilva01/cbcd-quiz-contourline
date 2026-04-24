@@ -480,7 +480,9 @@ function SlotMachineStage({
 
   const currentRow = scrollProgress * WINNER_POSITION;
   const translateY = Math.round(rowHeight * (CENTER_ROW_INDEX - currentRow));
-  const blurPx = Math.max(0, (1 - scrollProgress) * 4);
+  // Blur mais suave (max 2.5px vs 4px antes) — nomes ficam legíveis mesmo
+  // no início da rolagem. Evita dúvida sobre estar rodando de verdade.
+  const blurPx = Math.max(0, (1 - scrollProgress) * 2.5);
   const ready = rowHeight > 0;
 
   return (
@@ -549,7 +551,10 @@ function SlotMachineStage({
             }}
           />
 
-          {/* Trilha de nomes — mask corta o slot central pra pill tomar conta */}
+          {/* Trilha de nomes — fade só nas bordas superior/inferior.
+              Nomes rolam VISIVELMENTE edge-to-edge em todos os momentos —
+              garante veracidade visual do sorteio (usuário sempre vê os
+              nomes passando, sem áreas 'brancas' que pareçam trava). */}
           <div
             className="absolute left-0 right-0 top-0 will-change-transform"
             style={{
@@ -559,9 +564,9 @@ function SlotMachineStage({
                 phase === "revealed" ? "filter 280ms ease-out" : "none",
               visibility: ready ? "visible" : "hidden",
               maskImage:
-                "linear-gradient(180deg, transparent 0%, black 10%, black 40%, transparent 44%, transparent 56%, black 60%, black 90%, transparent 100%)",
+                "linear-gradient(180deg, transparent 0%, black 8%, black 92%, transparent 100%)",
               WebkitMaskImage:
-                "linear-gradient(180deg, transparent 0%, black 10%, black 40%, transparent 44%, transparent 56%, black 60%, black 90%, transparent 100%)",
+                "linear-gradient(180deg, transparent 0%, black 8%, black 92%, transparent 100%)",
             }}
           >
             {list.map((item, i) => {
@@ -575,7 +580,7 @@ function SlotMachineStage({
                   }}
                 >
                   <span
-                    className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]/80"
+                    className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
                     style={{
                       fontSize: "clamp(0.8rem, 1.6vh, 1.45rem)",
                     }}
