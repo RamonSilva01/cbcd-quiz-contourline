@@ -5,7 +5,7 @@ import { ContourlineMark } from "@/components/brand/contourline-mark";
 import { Button } from "@/components/ui/button";
 import { useQuiz } from "@/lib/quiz/context";
 
-const AUTO_RESET_MS = 5_500;
+const AUTO_RESET_MS = 12_000;
 
 /**
  * Tela de despedida — mostrada após o médico clicar "Finalizar" na tela
