@@ -622,10 +622,13 @@ function SlotMachineStage({
             Ganhador(a) do sorteio
           </p>
           <h2
-            className="font-display font-semibold leading-[1.02] text-white"
+            className="font-display font-semibold leading-[1.02]"
             style={{
               fontSize: "clamp(2.25rem, 5vw + 1rem, 5rem)",
               letterSpacing: "-0.015em",
+              color: "var(--color-bronze-300)",
+              textShadow:
+                "0 0 40px rgba(225,198,163,0.35), 0 0 80px rgba(184,148,106,0.2)",
             }}
           >
             {formatFullDoctorName(winner.full_name)}
