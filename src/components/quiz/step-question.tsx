@@ -116,7 +116,12 @@ export function StepQuestion({ questionNumber }: StepQuestionProps) {
       </div>
 
       {/* Mobile: sticky bar com Voltar + CTA primária */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 flex items-center gap-3 border-t border-[var(--border)] bg-[var(--background)]/95 p-4 backdrop-blur-md sm:hidden">
+      <div
+        className="fixed bottom-0 left-0 right-0 z-30 flex items-center gap-3 border-t border-[var(--border)] bg-[var(--background)]/95 px-4 pt-4 backdrop-blur-md sm:hidden"
+        style={{
+          paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+        }}
+      >
         <Button
           variant="ghost"
           size="md"

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ArrowUpRight, RotateCcw } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { ContourlineMark } from "@/components/brand/contourline-mark";
 import { useQuiz } from "@/lib/quiz/context";
 import { Button } from "@/components/ui/button";
@@ -193,7 +193,7 @@ export function StepThanks({ isKiosk }: StepThanksProps) {
         exclusiva de médicos da Contourline pelo WhatsApp.
       </p>
 
-      {/* ============ NOVA PARTICIPAÇÃO — sempre visível ============ */}
+      {/* ============ FINALIZAR — sempre visível ============ */}
       <div className="relative z-10 flex flex-col items-center gap-3 pt-2">
         <Button
           variant="accent"
@@ -201,12 +201,8 @@ export function StepThanks({ isKiosk }: StepThanksProps) {
           onClick={() => dispatch({ type: "reset" })}
           className="min-w-[220px]"
         >
-          <RotateCcw className="h-4 w-4" strokeWidth={1.75} />
-          Nova participação
+          Finalizar
         </Button>
-        <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--color-clinical-400)]">
-          Passe o tablet para o próximo médico
-        </p>
       </div>
 
       {/* Countdown kiosk */}

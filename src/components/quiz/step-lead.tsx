@@ -334,7 +334,13 @@ export function StepLead() {
           </Button>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-[var(--border)] bg-[var(--background)]/95 p-4 backdrop-blur-md sm:hidden">
+        <div
+          className="fixed bottom-0 left-0 right-0 z-30 border-t border-[var(--border)] bg-[var(--background)]/95 px-4 pt-4 backdrop-blur-md sm:hidden"
+          style={{
+            paddingBottom:
+              "max(1rem, env(safe-area-inset-bottom))",
+          }}
+        >
           <Button
             type="submit"
             variant="primary"

@@ -67,8 +67,9 @@ export function QuizShell({
       <main
         className={cn(
           "flex flex-1 items-start justify-center px-5 sm:px-8 md:items-center md:px-12 lg:px-16",
-          // respira mais embaixo no mobile pra não colar no CTA sticky
-          "pb-28 sm:pb-16 md:pb-10",
+          // Mobile: espaço generoso pra CTA sticky + safe-area iOS não cobrirem conteúdo.
+          // 44 = 11rem = 176px (cobre sticky bar ~96px + safe-area ~34px + folga 46px)
+          "pb-44 sm:pb-16 md:pb-10",
         )}
       >
         <div
