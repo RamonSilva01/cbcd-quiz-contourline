@@ -523,7 +523,9 @@ function SlotMachineStage({
           />
         </div>
 
-        {/* Overlay — a tela real do triLift vira o "display" do sorteio */}
+        {/* Overlay — a tela real do triLift vira o "display" do sorteio.
+            Efeito slot machine: trilha rola por cima/baixo, pill estacionário
+            no centro mostra o nome atual. */}
         <div
           ref={viewportRef}
           className="absolute overflow-hidden"
@@ -532,10 +534,6 @@ function SlotMachineStage({
             left: SCREEN_RECT.left,
             width: SCREEN_RECT.width,
             height: SCREEN_RECT.height,
-            maskImage:
-              "linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%)",
           }}
         >
           {/* "Tela ligada" — background claro pra o texto ficar legível */}
@@ -548,7 +546,7 @@ function SlotMachineStage({
             }}
           />
 
-          {/* Trilha de nomes */}
+          {/* Trilha de nomes — mask corta o slot central pra pill tomar conta */}
           <div
             className="absolute left-0 right-0 top-0 will-change-transform"
             style={{
@@ -557,11 +555,13 @@ function SlotMachineStage({
               transition:
                 phase === "revealed" ? "filter 280ms ease-out" : "none",
               visibility: ready ? "visible" : "hidden",
+              maskImage:
+                "linear-gradient(180deg, transparent 0%, black 10%, black 40%, transparent 44%, transparent 56%, black 60%, black 90%, transparent 100%)",
+              WebkitMaskImage:
+                "linear-gradient(180deg, transparent 0%, black 10%, black 40%, transparent 44%, transparent 56%, black 60%, black 90%, transparent 100%)",
             }}
           >
             {list.map((item, i) => {
-              const isWinnerRow =
-                phase === "revealed" && i === WINNER_POSITION;
               const label = formatFullDoctorName(item.full_name);
               return (
                 <div
@@ -571,35 +571,30 @@ function SlotMachineStage({
                     height: ready ? `${rowHeight}px` : "0",
                   }}
                 >
-                  {isWinnerRow ? (
-                    <WinnerRow label={label} />
-                  ) : (
-                    <span
-                      className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]/85"
-                      style={{
-                        fontSize: "clamp(0.8rem, 1.6vh, 1.45rem)",
-                      }}
-                    >
-                      ...{label}
-                    </span>
-                  )}
+                  <span
+                    className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]/80"
+                    style={{
+                      fontSize: "clamp(0.8rem, 1.6vh, 1.45rem)",
+                    }}
+                  >
+                    ...{label}
+                  </span>
                 </div>
               );
             })}
           </div>
 
-          {/* Linhas de seleção bronze durante rolling */}
-          {phase === "rolling" && (
-            <>
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute left-2 right-2 top-1/2 h-px -translate-y-[0.9rem] bg-[var(--color-bronze-500)]/55"
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute left-2 right-2 top-1/2 h-px translate-y-[0.9rem] bg-[var(--color-bronze-500)]/55"
-              />
-            </>
+          {/* PILL ESTACIONÁRIO no slot central — igual ao WinnerRow.
+              Durante rolling, mostra o nome atual que está passando.
+              Quando revealed, mostra o winner final. */}
+          {ready && (
+            <SelectionPill
+              list={list}
+              currentRow={currentRow}
+              rowHeight={rowHeight}
+              phase={phase}
+              winner={winner}
+            />
           )}
         </div>
       </div>
@@ -678,7 +673,84 @@ function SlotMachineStage({
 }
 
 // ============================================================
-// WINNER ROW
+// SELECTION PILL — pill estacionário no slot central da tela do triLift.
+// Durante rolling: mostra o nome atual que está passando pelo slot.
+// Durante revealed: mostra o winner final. Mesma estética em ambos estados.
+// ============================================================
+
+interface SelectionPillProps {
+  list: EligibleEntry[];
+  currentRow: number;
+  rowHeight: number;
+  phase: Phase;
+  winner: Winner | null;
+}
+
+function SelectionPill({
+  list,
+  currentRow,
+  rowHeight,
+  phase,
+  winner,
+}: SelectionPillProps) {
+  // Nome atualmente no slot central (computed do currentRow).
+  // Quando revealed, forçamos pro winner pra garantir consistência.
+  const centerIdx = Math.min(
+    Math.max(0, Math.round(currentRow)),
+    list.length - 1,
+  );
+  const currentItem =
+    phase === "revealed" && winner
+      ? { id: winner.id, full_name: winner.full_name }
+      : list[centerIdx];
+  const label = currentItem ? formatFullDoctorName(currentItem.full_name) : "";
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute left-[4%] right-[4%] flex items-center rounded-full px-3"
+      style={{
+        top: `${CENTER_ROW_INDEX * rowHeight}px`,
+        height: `${rowHeight}px`,
+        background: "linear-gradient(180deg, #FBF9F5 0%, #F3EDE3 100%)",
+        boxShadow:
+          "0 0 0 1.2px rgba(184,148,106,0.95), 0 0 22px 4px rgba(184,148,106,0.55), inset 0 0 0 1px rgba(255,255,255,0.6)",
+      }}
+    >
+      {/* Glow radial atrás do pill */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 rounded-full blur-lg"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(184,148,106,0.55) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* Trophy à esquerda */}
+      <TrophyIcon
+        className="shrink-0 text-[var(--color-bronze-600)]"
+        style={{
+          width: "clamp(0.9rem, 1.5vh, 1.35rem)",
+          height: "clamp(0.9rem, 1.5vh, 1.35rem)",
+        }}
+      />
+
+      {/* Nome (muda conforme scroll — slot machine effect) */}
+      <span
+        className="flex-1 truncate pl-2 text-center font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
+        style={{
+          fontSize: "clamp(0.8rem, 1.6vh, 1.45rem)",
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+// ============================================================
+// WINNER ROW (legacy — mantido caso precise usar em outro lugar)
 // ============================================================
 
 function WinnerRow({ label }: { label: string }) {
