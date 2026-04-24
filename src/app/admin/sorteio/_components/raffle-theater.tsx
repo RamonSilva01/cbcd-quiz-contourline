@@ -494,8 +494,8 @@ function SlotMachineStage({
         style={{
           height:
             phase === "revealed"
-              ? "min(55vh, 620px)"
-              : "min(88vh, 1020px)",
+              ? "min(48vh, 560px)"
+              : "min(85vh, 1020px)",
           aspectRatio: String(TRILIFT_ZOOM_ASPECT),
         }}
       >
@@ -582,10 +582,10 @@ function SlotMachineStage({
                   <span
                     className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
                     style={{
-                      fontSize: "clamp(0.8rem, 1.6vh, 1.45rem)",
+                      fontSize: "clamp(0.7rem, min(1.55vh, 2.2vw), 1.4rem)",
                     }}
                   >
-                    ...{label}
+                    {label}
                   </span>
                 </div>
               );
@@ -616,7 +616,10 @@ function SlotMachineStage({
 
       {/* HERO REVEAL — nome gigante legível de longe pra plateia */}
       {phase === "revealed" && winner && (
-        <div className="flex flex-col items-center gap-3 text-center animate-fade-up md:gap-4">
+        <div
+          className="flex flex-col items-center gap-3 text-center animate-fade-up md:gap-4"
+          style={{ maxWidth: "min(94vw, 1400px)", width: "100%" }}
+        >
           <span
             aria-hidden="true"
             className="block h-px w-24 origin-center animate-rule-draw bg-[var(--color-bronze-500)]"
@@ -627,11 +630,16 @@ function SlotMachineStage({
           <h2
             className="font-display font-semibold leading-[1.02]"
             style={{
-              fontSize: "clamp(2.25rem, 5vw + 1rem, 5rem)",
+              // Clamp responsivo em ambos eixos — telões largos/quadrados
+              // (ex: 60" a 1280×1152) ganham fonte menor pra não estourar.
+              fontSize: "clamp(1.75rem, min(4.5vw, 7.5vh), 4.5rem)",
               letterSpacing: "-0.015em",
               color: "var(--color-bronze-300)",
               textShadow:
                 "0 0 40px rgba(225,198,163,0.35), 0 0 80px rgba(184,148,106,0.2)",
+              maxWidth: "100%",
+              wordBreak: "break-word",
+              textWrap: "balance",
             }}
           >
             {formatFullDoctorName(winner.full_name)}
@@ -739,8 +747,8 @@ function SelectionPill({
       <TrophyIcon
         className="shrink-0 text-[var(--color-bronze-600)]"
         style={{
-          width: "clamp(0.9rem, 1.5vh, 1.35rem)",
-          height: "clamp(0.9rem, 1.5vh, 1.35rem)",
+          width: "clamp(0.8rem, min(1.4vh, 2vw), 1.3rem)",
+          height: "clamp(0.8rem, min(1.4vh, 2vw), 1.3rem)",
         }}
       />
 
@@ -748,7 +756,7 @@ function SelectionPill({
       <span
         className="flex-1 truncate pl-2 text-center font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
         style={{
-          fontSize: "clamp(0.8rem, 1.6vh, 1.45rem)",
+          fontSize: "clamp(0.7rem, min(1.55vh, 2.2vw), 1.4rem)",
         }}
       >
         {label}
