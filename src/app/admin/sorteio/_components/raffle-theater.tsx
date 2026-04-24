@@ -489,10 +489,15 @@ function SlotMachineStage({
     <div className="relative z-10 flex h-[calc(100vh-80px)] flex-col items-center justify-center gap-4 px-6 pb-4 md:gap-6 md:pb-8">
       {/* Grid 3-col: [ganhador à esquerda] [equipamento centralizado]
           [CRM à direita]. Equipamento mantém mesmo tamanho rolling/revealed —
-          nome do ganhador fica na pill da tela dele, laterais complementam. */}
+          nome do ganhador fica na pill da tela dele, laterais complementam.
+          maxWidth 1800px evita que laterais fiquem absurdamente largas em
+          telões ultra-wide (5K+) — mantém composição fechada no centro. */}
       <div
         className="grid w-full items-center gap-3 md:gap-6 lg:gap-10"
-        style={{ gridTemplateColumns: "1fr auto 1fr" }}
+        style={{
+          gridTemplateColumns: "1fr auto 1fr",
+          maxWidth: "min(100%, 1800px)",
+        }}
       >
         {/* LEFT — Parabéns + nome do ganhador (revealed only) */}
         <div className="flex min-w-0 flex-col items-end justify-center gap-3 text-right md:gap-4">
@@ -509,9 +514,9 @@ function SlotMachineStage({
                 className="font-display font-semibold leading-[1.02]"
                 style={{
                   // Clamp responsivo nos dois eixos — tela larga pega vw,
-                  // tela alta/quadrada pega vh, cap em 3.25rem pra caber
-                  // ao lado do equipamento sem atropelar.
-                  fontSize: "clamp(1.25rem, min(3vw, 5.5vh), 3.25rem)",
+                  // tela alta/quadrada pega vh, cap em 4.25rem (68px) pra
+                  // aproveitar tela 4K+ sem atropelar o equipamento central.
+                  fontSize: "clamp(1.25rem, min(3vw, 5.5vh), 4.25rem)",
                   letterSpacing: "-0.015em",
                   color: "var(--color-bronze-300)",
                   textShadow:
@@ -527,11 +532,15 @@ function SlotMachineStage({
           )}
         </div>
 
-        {/* CENTER — Equipamento (mesma altura em rolling + revealed) */}
+        {/* CENTER — Equipamento (mesma altura em rolling + revealed).
+            Altura = min entre: 75vh (tela padrão), calc(70vw/aspect) (limita
+            largura total em telas estreitas/portrait), 1200px (cap pra 4K+ não
+            ficar gigante inútil). Aspect 0.73 → largura = altura × 0.73. */}
         <div
           className="relative animate-scale-in"
           style={{
-            height: "min(75vh, 900px)",
+            height:
+              "min(75vh, calc(70vw / 0.73), 1200px)",
             aspectRatio: String(TRILIFT_ZOOM_ASPECT),
           }}
         >
@@ -618,7 +627,7 @@ function SlotMachineStage({
                     <span
                       className="truncate font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
                       style={{
-                        fontSize: "clamp(0.7rem, min(1.55vh, 2.2vw), 1.4rem)",
+                        fontSize: "clamp(0.7rem, min(1.55vh, 2.2vw), 1.75rem)",
                       }}
                     >
                       {label}
@@ -657,7 +666,7 @@ function SlotMachineStage({
               <p
                 className="font-display font-semibold leading-[1.02]"
                 style={{
-                  fontSize: "clamp(1.15rem, min(2.4vw, 4.5vh), 2.75rem)",
+                  fontSize: "clamp(1.15rem, min(2.4vw, 4.5vh), 3.5rem)",
                   letterSpacing: "-0.015em",
                   color: "var(--color-bronze-300)",
                   textShadow: "0 0 40px rgba(225,198,163,0.35)",
@@ -780,8 +789,8 @@ function SelectionPill({
       <TrophyIcon
         className="shrink-0 text-[var(--color-bronze-600)]"
         style={{
-          width: "clamp(0.8rem, min(1.4vh, 2vw), 1.3rem)",
-          height: "clamp(0.8rem, min(1.4vh, 2vw), 1.3rem)",
+          width: "clamp(0.8rem, min(1.4vh, 2vw), 1.6rem)",
+          height: "clamp(0.8rem, min(1.4vh, 2vw), 1.6rem)",
         }}
       />
 
@@ -789,7 +798,7 @@ function SelectionPill({
       <span
         className="flex-1 truncate pl-2 text-center font-display font-semibold uppercase tracking-tight text-[var(--color-navy-900)]"
         style={{
-          fontSize: "clamp(0.7rem, min(1.55vh, 2.2vw), 1.4rem)",
+          fontSize: "clamp(0.7rem, min(1.55vh, 2.2vw), 1.75rem)",
         }}
       >
         {label}
