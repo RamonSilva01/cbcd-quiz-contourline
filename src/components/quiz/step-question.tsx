@@ -6,6 +6,7 @@ import { RadioGroup, RadioCard } from "@/components/ui/radio-group";
 import { QUIZ_QUESTIONS } from "@/lib/quiz/questions";
 import { useQuiz } from "@/lib/quiz/context";
 import type { AnswerKey } from "@/lib/quiz/types";
+import { StickyPortal } from "./sticky-portal";
 
 interface StepQuestionProps {
   questionNumber: 1 | 2 | 3;
@@ -49,8 +50,9 @@ export function StepQuestion({ questionNumber }: StepQuestionProps) {
   };
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-7 md:gap-9">
-      {/* Prompt */}
+    <>
+      <div className="mx-auto flex max-w-3xl flex-col gap-7 md:gap-9">
+        {/* Prompt */}
       <div className="space-y-3">
         <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--color-bronze-600)]">
           Pergunta {String(questionNumber).padStart(2, "0")} de 03
@@ -115,36 +117,41 @@ export function StepQuestion({ questionNumber }: StepQuestionProps) {
         </Button>
       </div>
 
-      {/* Mobile: sticky bar com Voltar + CTA primária */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-30 flex items-center gap-3 border-t border-[var(--border)] bg-[var(--background)]/95 px-4 pt-4 backdrop-blur-md sm:hidden"
-        style={{
-          paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
-        }}
-      >
-        <Button
-          variant="ghost"
-          size="md"
-          onClick={onBack}
-          disabled={submitting}
-          className="shrink-0"
-        >
-          Voltar
-        </Button>
-        <Button
-          variant="primary"
-          size="xl"
-          onClick={onNext}
-          disabled={!currentAnswer || submitting}
-          className="flex-1"
-        >
-          {submitting
-            ? "Enviando..."
-            : isLast
-            ? "Finalizar"
-            : "Continuar"}
-        </Button>
-      </div>
     </div>
+
+      {/* Mobile sticky bar — portal pra document.body
+          (escapa do containing block criado por animate-fade-up ancestral) */}
+      <StickyPortal>
+        <div
+          className="fixed bottom-0 left-0 right-0 z-[70] flex items-center gap-3 border-t border-[var(--border)] bg-[var(--background)]/95 px-4 pt-4 backdrop-blur-md sm:hidden"
+          style={{
+            paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+          }}
+        >
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={onBack}
+            disabled={submitting}
+            className="shrink-0"
+          >
+            Voltar
+          </Button>
+          <Button
+            variant="primary"
+            size="xl"
+            onClick={onNext}
+            disabled={!currentAnswer || submitting}
+            className="flex-1"
+          >
+            {submitting
+              ? "Enviando..."
+              : isLast
+              ? "Finalizar"
+              : "Continuar"}
+          </Button>
+        </div>
+      </StickyPortal>
+    </>
   );
 }

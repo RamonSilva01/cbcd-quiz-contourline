@@ -20,6 +20,7 @@ import { MEDICAL_SPECIALTIES } from "@/lib/quiz/specialties";
 import { toTitleCaseName } from "@/lib/quiz/text";
 import { useQuiz } from "@/lib/quiz/context";
 import { LgpdDialog } from "./lgpd-dialog";
+import { StickyPortal } from "./sticky-portal";
 
 export function StepLead() {
   const { dispatch } = useQuiz();
@@ -144,6 +145,7 @@ export function StepLead() {
 
       {/* ============== FORM ============== */}
       <form
+        id="lead-form"
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-5"
         noValidate
@@ -334,15 +336,20 @@ export function StepLead() {
           </Button>
         </div>
 
+      </form>
+
+      {/* Mobile sticky CTA — portal pra document.body
+          (escapa do containing block criado por animate-fade-up ancestral) */}
+      <StickyPortal>
         <div
-          className="fixed bottom-0 left-0 right-0 z-30 border-t border-[var(--border)] bg-[var(--background)]/95 px-4 pt-4 backdrop-blur-md sm:hidden"
+          className="fixed bottom-0 left-0 right-0 z-[70] border-t border-[var(--border)] bg-[var(--background)]/95 px-4 pt-4 backdrop-blur-md sm:hidden"
           style={{
-            paddingBottom:
-              "max(1rem, env(safe-area-inset-bottom))",
+            paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
           }}
         >
           <Button
             type="submit"
+            form="lead-form"
             variant="primary"
             size="xl"
             disabled={isBusy}
@@ -351,7 +358,7 @@ export function StepLead() {
             {isBusy ? "Validando..." : "Iniciar quiz"}
           </Button>
         </div>
-      </form>
+      </StickyPortal>
 
       <LgpdDialog open={lgpdOpen} onClose={() => setLgpdOpen(false)} />
     </div>

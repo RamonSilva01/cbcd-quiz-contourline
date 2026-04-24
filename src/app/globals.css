@@ -84,9 +84,10 @@ body {
   font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Reserva safe area no iOS / notches */
+  /* Safe-area top pro notch/dynamic island. Bottom NÃO é necessário aqui —
+     a sticky bar (portal em document.body) já gerencia safe-area-inset-bottom
+     internamente. Duplicar causaria scroll fantasma. */
   padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 h1, h2, h3, h4 {
