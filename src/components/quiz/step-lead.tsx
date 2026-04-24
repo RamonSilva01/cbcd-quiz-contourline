@@ -80,10 +80,14 @@ export function StepLead() {
       setChecking(false);
     }
 
+    // Concatena nome + sobrenome em fullName pra manter compatibilidade
+    // com a API, DB (column full_name) e display no sorteio.
+    const fullName = `${data.firstName.trim()} ${data.lastName.trim()}`;
+
     dispatch({
       type: "setLead",
       lead: {
-        fullName: data.fullName.trim(),
+        fullName,
         specialty: data.specialty,
         specialtyOther: data.specialtyOther?.trim() || undefined,
         crm: data.crm.trim().toUpperCase(),
@@ -94,8 +98,16 @@ export function StepLead() {
     });
   };
 
-  // Nome: aplica Title Case em tempo real (respeita "da", "de", "dos"...)
-  const fullNameReg = register("fullName", {
+  // Nome e sobrenome: Title Case em tempo real (respeita "da", "de", "dos"...)
+  const firstNameReg = register("firstName", {
+    onChange: (e) => {
+      const formatted = toTitleCaseName(e.target.value);
+      if (formatted !== e.target.value) {
+        e.target.value = formatted;
+      }
+    },
+  });
+  const lastNameReg = register("lastName", {
     onChange: (e) => {
       const formatted = toTitleCaseName(e.target.value);
       if (formatted !== e.target.value) {
@@ -156,23 +168,43 @@ export function StepLead() {
         noValidate
       >
         <div className="grid gap-4 md:gap-5 md:grid-cols-2">
-          {/* Nome (full width) */}
-          <div className="md:col-span-2">
-            <Label htmlFor="fullName" className="mb-2 block">
-              Nome completo
+          {/* Nome */}
+          <div>
+            <Label htmlFor="firstName" className="mb-2 block">
+              Nome
             </Label>
             <Input
-              id="fullName"
-              autoComplete="name"
+              id="firstName"
+              autoComplete="given-name"
               autoCapitalize="words"
               autoFocus
-              placeholder="Dra. Marina Carvalho"
-              aria-invalid={!!errors.fullName}
-              {...fullNameReg}
+              placeholder="Marina"
+              aria-invalid={!!errors.firstName}
+              {...firstNameReg}
             />
-            {errors.fullName && (
+            {errors.firstName && (
               <p className="mt-1.5 text-xs text-[var(--destructive)]">
-                {errors.fullName.message}
+                {errors.firstName.message}
+              </p>
+            )}
+          </div>
+
+          {/* Sobrenome */}
+          <div>
+            <Label htmlFor="lastName" className="mb-2 block">
+              Sobrenome
+            </Label>
+            <Input
+              id="lastName"
+              autoComplete="family-name"
+              autoCapitalize="words"
+              placeholder="Carvalho Silva"
+              aria-invalid={!!errors.lastName}
+              {...lastNameReg}
+            />
+            {errors.lastName && (
+              <p className="mt-1.5 text-xs text-[var(--destructive)]">
+                {errors.lastName.message}
               </p>
             )}
           </div>

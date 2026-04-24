@@ -28,12 +28,16 @@ const phoneSchema = z
   });
 
 export const leadSchema = z.object({
-  fullName: z
+  firstName: z
     .string()
     .trim()
-    .min(3, "Informe o nome completo")
-    .max(200, "Nome muito longo")
-    .refine((v) => v.includes(" "), "Informe nome e sobrenome"),
+    .min(2, "Informe seu nome")
+    .max(60, "Nome muito longo"),
+  lastName: z
+    .string()
+    .trim()
+    .min(2, "Informe seu sobrenome")
+    .max(120, "Sobrenome muito longo"),
   specialty: z.enum([
     "dermatologia",
     "cirurgia_plastica",
@@ -59,8 +63,22 @@ export const leadSchema = z.object({
 export type LeadFormValues = z.input<typeof leadSchema>;
 export type LeadFormParsed = z.output<typeof leadSchema>;
 
+/**
+ * Schema da API — recebe fullName já concatenado (o form converte
+ * firstName + lastName → fullName antes de submeter).
+ */
+export const leadApiSchema = leadSchema
+  .omit({ firstName: true, lastName: true })
+  .extend({
+    fullName: z
+      .string()
+      .trim()
+      .min(3, "Nome completo inválido")
+      .max(200, "Nome muito longo"),
+  });
+
 export const submitPayloadSchema = z.object({
-  lead: leadSchema,
+  lead: leadApiSchema,
   answers: z.object({
     q1: z.enum(["A", "B", "C", "D"]),
     q2: z.enum(["A", "B", "C", "D"]),
