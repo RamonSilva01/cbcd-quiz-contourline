@@ -525,7 +525,9 @@ function SlotMachineStage({
 
         {/* Overlay — a tela real do triLift vira o "display" do sorteio.
             Efeito slot machine: trilha rola por cima/baixo, pill estacionário
-            no centro mostra o nome atual. */}
+            no centro mostra o nome atual.
+            Border-radius acompanha os cantos arredondados reais do display
+            do triLift (moldura rose-gold). overflow-hidden clipa children. */}
         <div
           ref={viewportRef}
           className="absolute overflow-hidden"
@@ -534,6 +536,7 @@ function SlotMachineStage({
             left: SCREEN_RECT.left,
             width: SCREEN_RECT.width,
             height: SCREEN_RECT.height,
+            borderRadius: "clamp(8px, 1.4vh, 22px)",
           }}
         >
           {/* "Tela ligada" — background claro pra o texto ficar legível */}
