@@ -23,7 +23,7 @@ export function QuizShell({
   compact = false,
 }: QuizShellProps) {
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="relative flex min-h-dvh flex-col">
       {/* ============== HEADER ============== */}
       <header
         className={cn(
@@ -67,9 +67,10 @@ export function QuizShell({
       <main
         className={cn(
           "flex flex-1 items-start justify-center px-5 sm:px-8 md:items-center md:px-12 lg:px-16",
-          // Mobile: espaço generoso pra CTA sticky + safe-area iOS não cobrirem conteúdo.
-          // 44 = 11rem = 176px (cobre sticky bar ~96px + safe-area ~34px + folga 46px)
-          "pb-44 sm:pb-16 md:pb-10",
+          // Mobile: espaço VERY generoso pra CTA sticky + safe-area iOS + chrome
+          // do Safari (que come ~100px dinamicamente). Combinado com min-h-dvh
+          // no body, garante que conteúdo não fique atrás do sticky bar.
+          "pb-56 sm:pb-16 md:pb-10",
         )}
       >
         <div

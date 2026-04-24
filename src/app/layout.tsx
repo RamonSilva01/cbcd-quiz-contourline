@@ -41,7 +41,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${fraunces.variable}`}>
-      <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased">
+      <body className="min-h-dvh bg-[var(--background)] text-[var(--foreground)] antialiased">
         {children}
       </body>
     </html>
