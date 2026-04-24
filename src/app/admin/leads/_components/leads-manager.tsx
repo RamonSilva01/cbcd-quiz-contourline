@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Trash2 } from "lucide-react";
+import { Trash2, Download, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -156,6 +156,40 @@ export function LeadsManager({ initialLeads }: Props) {
     }
   };
 
+  const doSeed = async () => {
+    const input = window.prompt(
+      "Quantos leads de teste deseja gerar? (1 a 500)\n\n⚠️ Estes leads aparecem como REAIS no sorteio. Use 'Limpar TUDO' depois do teste pra zerar.",
+      "50",
+    );
+    if (!input) return;
+    const count = Number(input);
+    if (!Number.isInteger(count) || count < 1 || count > 500) {
+      window.alert("Número inválido. Use um inteiro entre 1 e 500.");
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const res = await fetch("/api/admin/leads/seed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ count }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        window.alert(`Erro: ${body?.error ?? res.status}`);
+        return;
+      }
+      const body = await res.json();
+      window.alert(`${body.created} leads de teste criados.`);
+      router.refresh();
+    } catch {
+      window.alert("Erro de conexão");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const doNuke = async () => {
     if (
       !window.confirm(
@@ -243,6 +277,14 @@ export function LeadsManager({ initialLeads }: Props) {
               </button>
             ))}
           </div>
+          <a
+            href="/api/admin/leads/export"
+            download
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-white px-4 text-xs font-medium uppercase tracking-wider text-[var(--color-navy-900)] transition-colors hover:border-[var(--color-bronze-500)] hover:bg-[var(--color-bone-100)]"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Exportar CSV
+          </a>
         </div>
       </div>
 
@@ -394,6 +436,28 @@ export function LeadsManager({ initialLeads }: Props) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ===== QA / Test data ===== */}
+      <div className="rounded-[var(--radius-lg)] border border-[var(--color-bronze-500)]/30 bg-[var(--color-bronze-500)]/5 p-5">
+        <h3 className="mb-1 text-sm font-semibold text-[var(--color-bronze-700)]">
+          Gerar leads de teste para QA do sorteio
+        </h3>
+        <p className="mb-4 max-w-2xl text-sm leading-relaxed text-[var(--color-clinical-700)]">
+          Cria leads falsos com nomes brasileiros, CRMs, especialidades e
+          telefones randômicos — aparecem como reais no sorteio. Útil pra
+          testar o slot machine com volume. Use <strong>Limpar TUDO</strong> abaixo
+          antes do evento pra zerar.
+        </p>
+        <Button
+          variant="outline"
+          size="md"
+          onClick={doSeed}
+          disabled={busy}
+        >
+          <Sparkles className="h-4 w-4" />
+          Gerar leads de teste…
+        </Button>
       </div>
 
       {/* ===== Danger zone ===== */}
